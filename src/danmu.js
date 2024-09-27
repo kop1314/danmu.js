@@ -60,6 +60,7 @@ export class DanmuJs extends BaseClass {
 
     // freezed comment
     this.freezeId = null
+    this.mouseControl = false
 
     config.comments.forEach((comment) => {
       comment.duration = comment.duration ? comment.duration : 5000

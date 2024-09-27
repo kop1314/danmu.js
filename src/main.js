@@ -122,15 +122,15 @@ class Main extends BaseClass {
     }
     this._events.push([container, 'transitionend', onTransitionEnd])
 
-    if (danmu.config.mouseControl || danmu.config.mouseEnterControl) {
+    if (danmu.config.mouseControl) {
       /**
        * @param {MouseEvent} e
        */
       const onMouseover = (e) => {
         const { danmu } = this
         let bullet
-
-        if (!danmu || (danmu.mouseControl && danmu.config.mouseControlPause)) {
+        
+        if (!danmu || danmu.mouseControl) {
           return
         }
 
@@ -146,6 +146,27 @@ class Main extends BaseClass {
         }
       }
       this._events.push([container, 'mouseover', onMouseover])
+
+      const onMouseout = (e) => {
+        const { danmu } = this
+        let bullet
+
+        if (!danmu || !danmu.mouseControl) {
+          return
+        }
+
+        bullet = this._getBulletByEvt(e)
+
+        if (bullet) {
+          if (bullet.status !== 'waiting' && bullet.status !== 'end') {
+            danmu.emit('bullet_out', {
+              bullet: bullet,
+              event: e
+            })
+          }
+        }
+      }
+      this._events.push([container, 'mouseout', onMouseout])
     }
 
     this._events.forEach((item) => {

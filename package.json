@@ -12,6 +12,7 @@
     "dist"
   ],
   "scripts": {
+    "start": "node ./src/version.js",
     "dev": "npm run build -- --watch",
     "build": "node ./src/version.js && webpack --progress --display-chunks -p",
     "serve": "serve ./",

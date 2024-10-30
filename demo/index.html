@@ -46,10 +46,12 @@
   <body>
     <div id="wrap">
       <div id="vs"></div>
+      <!--
       <video id="mse" autoplay="true" muted playsinline controls loop>
         <source src="//s1.pstatp.com/cdn/expire-1-M/byted-player-videos/1.0.0/xgplayer-demo.mp4" type="video/mp4" />
         your browser does not support the video tag
       </video>
+      -->
     </div>
     <div id="btnwrap">
       <div>
@@ -107,7 +109,7 @@
         containerStyle: {
           zIndex: 100
         },
-        player: player,
+        //player: player,
         mouseControl: true, // 打开鼠标控制, 打开后可监听到 bullet_hover 事件。danmu.on('bullet_hover', function (data) {})
         mouseControlPause: true, // 鼠标触摸暂停。mouseControl: true 生效
         area: {
@@ -127,6 +129,12 @@
         }, 4000)
       })
 
+      danmu.on('bullet_transitionend', (e) => {
+          console.log(e.bullet_id);
+
+      })
+
+
       start()
 
       let id = 1
@@ -135,6 +143,7 @@
           danmu.start()
         }
 
+        /*
         setInterval(function () {
           // console.log(player.currentTime+1)
           let currentTime = player.currentTime
@@ -166,7 +175,7 @@
               // border
             }
           })
-        }, 500)
+        }, 500)*/
       }
 
       function play() {
@@ -182,8 +191,8 @@
       }
 
       function sendComment() {
-        id++
-        let el = createDom('xg-el', '弹幕弹幕弹幕<img src="./grinning-face.png" />弹幕弹幕', {}, 'xgplayer-el')
+        
+        let el = createDom('xg-el', 'abcdefg '+id, {}, 'xgplayer-el')
 
         danmu.sendComment({
           duration: 15000,
@@ -192,11 +201,20 @@
           // realTime: true,
           // noDiscard: true,
           // prior: true,
-          // realTime: true,
-          start: 1000 * player.currentTime,
+          noDiscard: true,
+          realTime: true,
+          //start: 1000 * player.currentTime,
           // txt: id + comment,
-          el: el
+          el: el,
+          style: {
+                    //color: id % 20 === 0 ? '#f00' : '#000',
+                    color: '#000',
+                    //fontSize: '48px',
+                    fontSize: '48px',
+                    paddingRight: '40px',
+          }
         })
+        id++
       }
 
       function sendPriorComment() {

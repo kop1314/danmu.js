@@ -4,6 +4,7 @@ import Channel from './channel'
 import { hasOwnProperty } from './utils/util'
 
 // 单次尝试入轨弹幕数量越多，长任务及CPU耗时越多
+//TODO: remove this line. it is not being used.
 const MAX_TRY_COUNT = 0
 
 /**
@@ -114,9 +115,16 @@ class Main extends BaseClass {
      */
     const onTransitionEnd = (e) => {
       const bullet = this._getBulletByEvt(e)
-
+      const { danmu } = this
       if (bullet) {
-        bullet.status = 'end'
+        //TODO : update this listener
+        bullet.status = 'end';
+        danmu.emit("bullet_transitionend", {
+            bullet_id: bullet.id,
+            event: e
+        })
+
+
         bullet.remove(false)
       }
     }
@@ -411,6 +419,7 @@ class Main extends BaseClass {
             }
             bullet = null
             item.attached_ = false
+
             if (item.noDiscard) {
               if (item.prior) {
                 self.data.unshift(item)

@@ -388,61 +388,73 @@ class Main extends BaseClass {
       if (list.length === 0) list = self.playedData.splice(0, 1)
     }
 
-    if (list.length > 0 && channel.checkAvailableTrack(list[0].mode)) {
-      // 提前更新轨道位置信息, 减少Bullet频繁读取容器dom信息
-      channel.updatePos()
+    if (list.length) {
+      if (channel.checkAvailableTrack(list[0].mode)) {
+        // 提前更新轨道位置信息, 减少Bullet频繁读取容器dom信息
+        channel.updatePos()
 
-      let tryCount = MAX_TRY_COUNT
+        let tryCount = MAX_TRY_COUNT
 
-      ListLoop: for (let i = 0, item; i < list.length; i++) {
-        item = list[i]
-        if (self.forceDuration && self.forceDuration !== item.duration) {
-          item.duration = self.forceDuration
-        }
-        bullet = new Bullet(danmu, item)
-        if (!bullet.bulletCreateFail) {
-          bullet.attach()
-          item.attached_ = true
-          result = channel.addBullet(bullet)
+        ListLoop: for (let i = 0, item; i < list.length; i++) {
+          item = list[i]
+          if (self.forceDuration && self.forceDuration !== item.duration) {
+            item.duration = self.forceDuration
+          }
+          bullet = new Bullet(danmu, item)
+          if (!bullet.bulletCreateFail) {
+            bullet.attach()
+            item.attached_ = true
+            result = channel.addBullet(bullet)
 
-          if (result.result) {
-            self.queue.push(bullet)
-            bullet.topInit()
+            if (result.result) {
+              self.queue.push(bullet)
+              bullet.topInit()
 
-            tryCount = MAX_TRY_COUNT
-          } else {
-            bullet.detach()
-            for (let k in bullet) {
-              if (hasOwnProperty.call(bullet, k)) {
-                delete bullet[k]
+              tryCount = MAX_TRY_COUNT
+            } else {
+              bullet.detach()
+              for (let k in bullet) {
+                if (hasOwnProperty.call(bullet, k)) {
+                  delete bullet[k]
+                }
               }
-            }
-            bullet = null
-            item.attached_ = false
+              bullet = null
+              item.attached_ = false
 
-            if (item.noDiscard) {
-              if (item.prior) {
-                self.data.unshift(item)
+              if (item.noDiscard) {
+                if (item.prior || item.realTime) {
+                  self.data.unshift(item)
+                } else {
+                  self.data.push(item)
+                }
+              }
+
+              if (tryCount === 0) {
+                break ListLoop
               } else {
-                self.data.push(item)
+                tryCount--
               }
             }
-
+          } else {
             if (tryCount === 0) {
               break ListLoop
             } else {
               tryCount--
             }
           }
-        } else {
-          if (tryCount === 0) {
-            break ListLoop
+        }
+      } else {
+        let item = list[0];
+        if (item.noDiscard) {
+          if (item.prior || item.realTime) {
+            self.data.unshift(item)
           } else {
-            tryCount--
+            self.data.push(item)
           }
         }
       }
     }
+    
   }
   sortData() {
     this.data.sort((prev, cur) => (prev.start || -1) - (cur.start || -1))

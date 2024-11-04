@@ -130,7 +130,7 @@
       })
 
       danmu.on('bullet_transitionend', (e) => {
-          console.log(e.bullet_id);
+          //console.log(e.bullet_id);
 
       })
 
@@ -138,44 +138,41 @@
       start()
 
       let id = 1
+      let s_id = 10000
       function start() {
         if (danmu) {
           danmu.start()
         }
 
-        /*
+        
         setInterval(function () {
           // console.log(player.currentTime+1)
-          let currentTime = player.currentTime
-          let txt = '哈哈哈哈哈哈哈哈哈66' + id
-          let el = document.createElement('div')
 
-          el.textContent = txt
+          var comments = []
+          for (let i = 0; i < 10; i++) {
+            let txt = 'danmu update test' + id
+            let el = document.createElement('div')
 
-          id++
-          // console.log('sendComment: ', id);
-          danmu.sendComment({
-            duration: 10000,
-            id: '' + id,
-            // prior: id % 20 === 0,
-            //   realTime: true,
-            // txt,
-            start: player.currentTime * 1000,
-            el,
-            disableCopyDOM: true,
-            // realTime: true,
-            // start: 1000*currentTime,
-            // txt: '哈哈哈哈哈哈哈哈哈123' + id, //弹幕文字内容
-            style: {
-              color: id % 20 === 0 ? '#f00' : '#000',
-              fontSize: '32px'
-              //   // padding: '5px 12px',
-              //   fontSize: '25px',
-              //   lineHeight: 1.125
-              // border
+            el.textContent = txt
+
+            let comment = {
+              duration: 15000,
+              id: id,
+              //noDiscard: true,
+              el: el,
+              style: {
+                fontSize: '32px'
+              }
             }
-          })
-        }, 500)*/
+            id++
+
+            //comments.push(comment)
+            danmu.sendComment(comment);
+          }
+          
+          // console.log('sendComment: ', id);
+          //danmu.updateComments(comments);
+        }, 2000)
       }
 
       function play() {
@@ -191,16 +188,16 @@
       }
 
       function sendComment() {
-        
-        let el = createDom('xg-el', 'abcdefg '+id, {}, 'xgplayer-el')
+        console.log("click "+ s_id)
+        let el = createDom('xg-el', 'abcdefg '+s_id, {}, 'xgplayer-el')
 
         danmu.sendComment({
           duration: 15000,
-          id: id,
+          id: s_id,
           // prior: true,
           // realTime: true,
           // noDiscard: true,
-          // prior: true,
+          //prior: true,
           noDiscard: true,
           realTime: true,
           //start: 1000 * player.currentTime,
@@ -214,7 +211,7 @@
                     paddingRight: '40px',
           }
         })
-        id++
+        s_id++
       }
 
       function sendPriorComment() {

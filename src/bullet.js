@@ -236,6 +236,10 @@ export class Bullet extends BaseClass {
 
     if (!self.container.contains(el)) {
       self.container.appendChild(el)
+      danmu.emit('bullet_add', {
+        bullet_id: self.id,
+        target: el
+      })
     }
     self.elPos = el.getBoundingClientRect()
     if (self.direction === 'b2t') {
